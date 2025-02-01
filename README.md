@@ -53,6 +53,6 @@ Model performance isn't very good for the price.
 
 Running on Premium v3 P1mv3 (2 vCPU, 16 GB mem, AU$175/mth).  
 Prompt: Why is the sky blue?  
-Deepseek-r1:8B response time: 36s  
+Deepseek-r1:1.5B response time: 36s  
 Phi3:3.8B response time: 2m12s  
-Deepseek-r1:1.5B response time: 4m3s  
+Deepseek-r1:8B response time: 4m3s  
