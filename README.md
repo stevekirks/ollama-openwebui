@@ -49,7 +49,7 @@ curl -X POST https://sollama.azurewebsites.net/ollama/api/chat -H "Authorization
 ```
 
 ## Azure Web App Performance:
-Model performance isn't very good for the price.  
+No GPU's, so the model performance isn't very good for the price.  
 
 Running on Premium v3 P1mv3 (2 vCPU, 16 GB mem, AU$175/mth).  
 Prompt: Why is the sky blue?  
