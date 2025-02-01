@@ -15,8 +15,8 @@ Then navigate to http://localhost:3083
 ## Steps to setup Ollama securely in an Azure Web App
 
 ### Create Azure Web App for Container.
-Use docker image:
-Server: **https://ghcr.io**
+Use docker image:  
+Server: **https://ghcr.io**  
 Name: **open-webui/open-webui:ollama**
 
 ### Create Azure Storage
