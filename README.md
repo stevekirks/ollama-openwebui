@@ -63,6 +63,10 @@ Deepseek-r1:8B response time: 4m3s
 
 At the time of writing there is [GPU support in preview in AusEast](https://learn.microsoft.com/en-us/azure/container-apps/gpu-serverless-overview#supported-regions).
 
+Run the bicep template to provision. **Warning: currently untested.**
+
+### Old way to be replaced...
+
 ### Create Resources
 -   Specified the workload to use the T4 GPU.
 -   Created Storage Account with two file shares and mounted them similar to above, except Container apps support "dots" in mount paths so used the intended `/root/.ollama`.
