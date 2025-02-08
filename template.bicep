@@ -1,9 +1,24 @@
+/*
+Create Ollama and Open Web UI container apps, with persistant storage for ollama models, in a managed environment with a GPU workload profile.
+Note that Ollama and Open Web UI are seperate because of an error loading the bundled container.
+The Ollama container port is exposed within the container environment for the Open WebUI container to call.
+*/
 param envResourceName string = 'env-a-e-devi-aigputrial'
 param ollamaContainerAppName string = 'ca-a-e-devi-aigputrialollama'
 param storageAccountName string = 'staedeviaigputrial'
 param openWebUiContainerAppName string = 'ca-a-e-devi-aigputrialopenwebui'
 param logWorkspaceName string = 'logwspc-a-e-devi-aigputrial'
-param ollamaWorkloadProfile string = 'gpu-t4'
+
+var ollamaWorkloadProfileT4 = 'gpu-t4'
+var ollamaContainerResourcesT4 = {
+  cpu: 8
+  memory: '56Gi'
+}
+var ollamaWorkloadProfileA100 = 'gpu-nc24a100'
+var ollamaContainerResourcesA100 = {
+  cpu: 24
+  memory: '220Gi'
+}
 
 resource envResource 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
   name: envResourceName
@@ -28,12 +43,12 @@ resource envResource 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
       }
       {
         workloadProfileType: 'Consumption-GPU-NC24-A100'
-        name: 'gpu-nc24a100'
+        name: ollamaWorkloadProfileA100
         enableFips: false
       }
       {
         workloadProfileType: 'Consumption-GPU-NC8as-T4'
-        name: ollamaWorkloadProfile
+        name: ollamaWorkloadProfileT4
         enableFips: false
       }
     ]
@@ -123,7 +138,7 @@ resource ollamaContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' = {
   properties: {
     managedEnvironmentId: envResource.id
     environmentId: envResource.id
-    workloadProfileName: ollamaWorkloadProfile
+    workloadProfileName: ollamaWorkloadProfileT4
     configuration: {
       activeRevisionsMode: 'Single'
       ingress: {
@@ -152,14 +167,11 @@ resource ollamaContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' = {
           image: 'docker.io/ollama/ollama:latest'
           imageType: 'ContainerImage'
           name: ollamaContainerAppName
-          resources: {
-            cpu: 24
-            memory: '220Gi'
-          }
+          resources: ollamaContainerResourcesT4
           probes: []
           volumeMounts: [
             {
-              volumeName: 'ollama'
+              volumeName: 'ollama-vol'
               mountPath: '/root/.ollama'
             }
           ]
@@ -183,9 +195,9 @@ resource ollamaContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' = {
       }
       volumes: [
         {
-          name: 'ollama'
+          name: 'ollama-vol'
           storageType: 'AzureFile'
-          storageName: 'ollama'
+          storageName: ollamaEnvStorage.name
         }
       ]
     }
@@ -233,7 +245,7 @@ resource openWebUiContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' 
           env: [
             {
               name: 'OLLAMA_BASE_URL'
-                value: ollamaContainerApp.properties.configuration.ingress.fqdn
+              value: 'https://${ollamaContainerApp.properties.configuration.ingress.fqdn}'
             }
           ]
           resources: {
@@ -254,13 +266,14 @@ resource openWebUiContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' 
   }
 }
 
-resource envOllamaFileShare 'Microsoft.App/managedEnvironments/storages@2024-08-02-preview' = {
+resource ollamaEnvStorage 'Microsoft.App/managedEnvironments/storages@2024-08-02-preview' = {
   parent: envResource
-  name: 'ollama'
+  name: 'ollama-env-storage'
   properties: {
     azureFile: {
       accountName: storageAccount.name
-      shareName: 'ollama'
+      accountKey: storageAccount.listKeys().keys[0].value
+      shareName: ollamaStorageAccountFileShare.name
       accessMode: 'ReadWrite'
     }
   }
@@ -284,7 +297,7 @@ resource defaultStorageAccountFileService 'Microsoft.Storage/storageAccounts/fil
 
 resource ollamaStorageAccountFileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-05-01' = {
   parent: defaultStorageAccountFileService
-  name: 'ollama'
+  name: 'ollama-fs'
   properties: {
     accessTier: 'TransactionOptimized'
     shareQuota: 1024
