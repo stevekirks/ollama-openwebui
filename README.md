@@ -58,13 +58,18 @@ curl -X POST https://sollama.azurewebsites.net/ollama/api/chat -H "Authorization
 
 ### Performance
 
+It seems to take a while to respond on initial prompt (it doesnt seem to be fast at model switching), but afterwards is fairly responsive.
+
 #### Some times with the T4 GPU
 Prompt: Why is the sky blue?  
-Deepseek-r1:1.5B response time: 1.1s  
+Deepseek-r1:1.5B response time: 1s  
 Deepseek-r1:8B response time: 25s  
-Phi4 response time: 3m55s  
+Phi4 response time: 17s  
 
-
+Prompt: Write python to extract text from HTML content and save images locally.
+Deepseek-r1:1.5B response time: 8s  
+Deepseek-r1:8B response time: 46s  
+Phi4 response time: 44s  
 
 ## Steps to setup Ollama securely in an Azure Web App (not recommended)
 
