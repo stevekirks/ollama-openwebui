@@ -58,13 +58,14 @@ curl -X POST https://sollama.azurewebsites.net/ollama/api/chat -H "Authorization
 
 ### Performance
 
-It seems to take a while to respond on initial prompt (it doesnt seem to be fast at model switching), but afterwards is fairly responsive.
+It seems to take a while to respond on initial prompt (it doesnt seem to be fast at model switching), but afterwards is fairly responsive to single requests with the smaller models (<14B). See TEST_RESULTS.md for more.
 
-#### Some times with the T4 GPU
+#### Using the T4 GPU (AUD$14/day)
 Prompt: Why is the sky blue?  
 Deepseek-r1:1.5B response time: 1s  
 Deepseek-r1:8B response time: 25s  
 Phi4 response time: 17s  
+Deepseek-r1:70B response time: 4m
 
 Prompt: Write python to extract text from HTML content and save images locally.
 Deepseek-r1:1.5B response time: 8s  
