@@ -2,6 +2,8 @@
 
 Ollama v0.5.7
 
+Note the results are focused on speed, not on the accuracy of the response.
+
 ## Summary of Observations using T4 or A100 infrastructure
 The first request after switching a model is slow (assuming it's loading the model into memory). Subsequent requests are much faster.
 With just a single GPU, it doesn't handle concurrency well.
