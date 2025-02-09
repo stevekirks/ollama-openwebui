@@ -43,6 +43,10 @@ async def main():
         tasks = [make_request(session, prompt, i) for i, prompt in enumerate(prompts)]
         results = await asyncio.gather(*tasks)
 
+    # Build markdown table
+    table_lines = []
+    table_lines.append("| Request | Duration |")
+    table_lines.append("|---------|---------:|")
     for i, result in enumerate(results):
         if result:
             for key in list(result.keys()):
@@ -51,10 +55,14 @@ async def main():
                         result[key] = f"{round(float(result[key]) / 1e9, 2)}s"  # ns to seconds
                     except (ValueError, TypeError) as e:
                         print(f"Error converting duration for {key}: {e}")
-
-            print(f"Request {i} successful. Duration: {result['total_duration']}")
-        else:
-            print(f"Request {i} failed.")
+            duration = result.get("total_duration", "N/A")
+            req_str = f"{i}"
+            if result:
+                duration_str = duration
+            else:
+                duration_str = "Failed"
+            table_lines.append(f"| {req_str:<7} | {duration_str:<8} |")
+    print("\n".join(table_lines))
 
 if __name__ == "__main__":
     asyncio.run(main())

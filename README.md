@@ -60,7 +60,7 @@ curl -X POST https://my-openwebui-app.australiaeast.azurecontainerapps.io/ollama
 
 It seems to take a while to respond on initial prompt (it doesnt seem to be fast at model switching), but afterwards is fairly responsive to single requests with the smaller models (<14B). See TEST_RESULTS.md for more.
 
-#### Using the T4 GPU (AUD$14/day)
+#### Using the T4 GPU
 Prompt: Why is the sky blue?  
 Deepseek-r1:1.5B response time: 1s  
 Deepseek-r1:8B response time: 25s  

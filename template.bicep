@@ -3,26 +3,44 @@ Create Ollama and Open Web UI container apps, with persistant storage for ollama
 Note that Ollama and Open Web UI are seperate because of an error loading the bundled container.
 The Ollama container port is exposed within the container environment for the Open WebUI container to call.
 */
-param envResourceName string = 'env-a-e-devi-aigputrial'
-param ollamaContainerAppName string = 'ca-a-e-devi-aigputrialollama'
-param storageAccountName string = 'staedeviaigputrial'
-param openWebUiContainerAppName string = 'ca-a-e-devi-aigputrialopenwebui'
-param logWorkspaceName string = 'logwspc-a-e-devi-aigputrial'
+param resourceLabel string
+param resourceLabelPrefix string = ''
+param envResourceName string = 'env-${resourceLabelPrefix}${resourceLabel}'
+param ollamaContainerAppName string = 'ca-${resourceLabelPrefix}${resourceLabel}ollama'
+param storageAccountName string = 'st${replace(resourceLabelPrefix,'-', '')}${resourceLabel}'
+param openWebUiContainerAppName string = 'ca-${resourceLabelPrefix}${resourceLabel}openwebui'
+param logWorkspaceName string = 'logwspc-${resourceLabelPrefix}${resourceLabel}'
+param openWebUiDatabaseUrl string = 'sqlite:///\${DATA_DIR}/webui.db'
+@allowed([
+  'gpu-t4'
+  'gpu-nc24a100'
+])
+param ollamaWorkloadName string = 'gpu-t4'
+param dataCentre string = 'Australia East'
 
-var ollamaWorkloadProfileT4 = 'gpu-t4'
-var ollamaContainerResourcesT4 = {
-  cpu: 8
-  memory: '56Gi'
-}
-var ollamaWorkloadProfileA100 = 'gpu-nc24a100'
-var ollamaContainerResourcesA100 = {
-  cpu: 24
-  memory: '220Gi'
-}
+var workloadProfiles = [
+  {
+    workloadProfileName: 'gpu-t4'
+    workloadProfileType: 'Consumption-GPU-NC8as-T4' 
+    containerResources: {
+      cpu: 8
+      memory: '56Gi'
+    }
+  }
+  {
+    workloadProfileName: 'gpu-nc24a100'
+    workloadProfileType: 'Consumption-GPU-NC24-A100'
+    containerResources: {
+      cpu: 24
+      memory: '220Gi'
+    }
+  }
+]
+var workloadProfile = ollamaWorkloadName == 'gpu-t4' ? workloadProfiles[0] : workloadProfiles[1]
 
 resource envResource 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
   name: envResourceName
-  location: 'Australia East'
+  location: dataCentre
   properties: {
     appLogsConfiguration: {
       destination: 'log-analytics'
@@ -42,13 +60,13 @@ resource envResource 'Microsoft.App/managedEnvironments@2024-08-02-preview' = {
         enableFips: false
       }
       {
-        workloadProfileType: 'Consumption-GPU-NC24-A100'
-        name: ollamaWorkloadProfileA100
+        workloadProfileType: workloadProfiles[0].workloadProfileType
+        name: workloadProfiles[0].workloadProfileName
         enableFips: false
       }
       {
-        workloadProfileType: 'Consumption-GPU-NC8as-T4'
-        name: ollamaWorkloadProfileT4
+        workloadProfileType: workloadProfiles[1].workloadProfileType
+        name: workloadProfiles[1].workloadProfileName
         enableFips: false
       }
     ]
@@ -130,7 +148,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
 
 resource ollamaContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' = {
   name: ollamaContainerAppName
-  location: 'Australia East'
+  location: dataCentre
   kind: 'containerapps'
   identity: {
     type: 'None'
@@ -138,7 +156,7 @@ resource ollamaContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' = {
   properties: {
     managedEnvironmentId: envResource.id
     environmentId: envResource.id
-    workloadProfileName: ollamaWorkloadProfileT4
+    workloadProfileName: workloadProfile.workloadProfileName
     configuration: {
       activeRevisionsMode: 'Single'
       ingress: {
@@ -167,7 +185,7 @@ resource ollamaContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' = {
           image: 'docker.io/ollama/ollama:latest'
           imageType: 'ContainerImage'
           name: ollamaContainerAppName
-          resources: ollamaContainerResourcesT4
+          resources: workloadProfile.containerResources
           probes: []
           volumeMounts: [
             {
@@ -206,7 +224,7 @@ resource ollamaContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' = {
 
 resource openWebUiContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' = {
   name: openWebUiContainerAppName
-  location: 'Australia East'
+  location: dataCentre
   kind: 'containerapps'
   identity: {
     type: 'None'
@@ -246,6 +264,10 @@ resource openWebUiContainerApp 'Microsoft.App/containerapps@2024-08-02-preview' 
             {
               name: 'OLLAMA_BASE_URL'
               value: 'https://${ollamaContainerApp.properties.configuration.ingress.fqdn}'
+            }
+            {
+              name: 'DATABASE_URL' 
+              value: openWebUiDatabaseUrl
             }
           ]
           resources: {
