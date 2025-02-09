@@ -1,6 +1,11 @@
-## Test requests to Ollama in a Azure Container App on the T4 (AUD$14/day) infrastructure
+# Test Results
 
-### Concurrent Requests
+## Testing requests to Ollama in a Azure Container App on the T4 (AUD$14/day) infrastructure
+
+### Summary of Observations
+Single requests on model 14B and below are responsive. It's noticably slower with larger models and with concurrent requests, to the point that its not usable.
+
+### Results
 Using random simple prompts such as "Why is the sky blue?", "What causes lightning in thunderstorms?", etc.
 
 Deepseek-r1:1.5B
@@ -38,3 +43,15 @@ Request 6 failed.
 Request 7: Duration: 155.13s
 Request 8 failed.
 Request 9: Duration: 69.91s
+
+phi4
+Request 0: Duration: 73.01s
+Request 1: Duration: 21.0s
+Request 2: Duration: 43.78s
+Request 3: Duration: 26.84s
+Request 4: Duration: 35.99s
+Request 5: Duration: 57.49s
+Request 6: Duration: 108.32s
+Request 7: Duration: 93.28s
+Request 8: Duration: 83.1s
+Request 9: Duration: 80.65s
