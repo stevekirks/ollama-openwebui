@@ -49,11 +49,11 @@ Under User Settings > Account
 ### Make a Request
 Using the generate endpoint:
 ```powershell
-curl -X POST https://sollama.azurewebsites.net/ollama/api/generate -H "Authorization: Bearer your_api_key" -H "Content-Type: application/json" -d '{"model": "phi3:latest", "prompt": "Why is the sky blue?","stream": false}'
+curl -X POST https://my-openwebui-app.australiaeast.azurecontainerapps.io/ollama/api/generate -H "Authorization: Bearer your_api_key" -H "Content-Type: application/json" -d '{"model": "phi3:latest", "prompt": "Why is the sky blue?","stream": false}'
 ```
 Using the chat endpoint:
 ```powershell
-curl -X POST https://sollama.azurewebsites.net/ollama/api/chat -H "Authorization: Bearer your_api_key" -H "Content-Type: application/json" -d '{"model": "deepseek-r1:1.5b","messages": [{"role": "user","content": "Why is the sky blue?"}]}'
+curl -X POST https://my-openwebui-app.australiaeast.azurecontainerapps.io/ollama/api/chat -H "Authorization: Bearer your_api_key" -H "Content-Type: application/json" -d '{"model": "deepseek-r1:1.5b","messages": [{"role": "user","content": "Why is the sky blue?"}]}'
 ```
 
 ### Performance
