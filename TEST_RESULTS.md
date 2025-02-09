@@ -1,5 +1,7 @@
 # Test Results
 
+Note the results are focused on speed, not on the accuracy of the response.
+
 ## Testing requests to Ollama in a Azure Container App on the T4 (AUD$14/day) infrastructure
 
 ### Summary of Observations
