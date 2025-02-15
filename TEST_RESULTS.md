@@ -9,7 +9,9 @@ The first request after switching a model is slow (assuming it's loading the mod
 With just a single GPU, it doesn't handle concurrency well.
 For Deepseek-r1, both infrastructure can run the 14B parameter model. Neither can adequately run the 32B model with concurrent requests.
 
-## Testing requests to Ollama in a Azure Container App on the T4 GPU (AUD$14/day (when continuously running)) infrastructure
+## Testing requests to Ollama in an Azure Container App using T4 GPU
+Ollama container running on: T4 GPU, 8vCPU, 56GB memory (AUD$14/day (when continuously running)).
+Open WebUI container on: 0.5vCPU, 1GB memory.
 
 ### Summary of Observations
 Single requests on model 14B and below are responsive. It's noticably slower with larger models and with concurrent requests, to the point that its not usable.
@@ -78,7 +80,9 @@ All timed out.
 | 9       | 80.65s   |
 
 
-## Testing requests to Ollama in a Azure Container App on the A100 GPU (AUD$106/day (when continuously running)) infrastructure
+## Testing requests to Ollama in an Azure Container App using A100 GPU
+Ollama container running on: NC24A100 GPU, 24vCPU, 220GB memory (AUD$106/day (when continuously running)).
+Open WebUI container on: 0.5vCPU, 1GB memory.
 
 ### Summary of Observations
 
