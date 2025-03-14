@@ -11,7 +11,7 @@ For Deepseek-r1, both infrastructure can run the 14B parameter model. Neither ca
 Having Open WebUI container in front of Ollama can significantly increase response times. Maybe because it was underresourced, but unsure why OWU would need more resources.
 
 ## Testing requests to Ollama in an Azure Container App using T4 GPU
-Ollama container running on: T4 GPU, 8vCPU, 56GB memory (AUD$14/day (when continuously running)).
+Ollama container running on: T4 GPU, 8vCPU, 56GB memory (AUD$82/day (when continuously running, after free grant runs out)).
 Open WebUI container on: 0.5vCPU, 1GB memory.
 
 ### Summary of Observations
@@ -82,7 +82,7 @@ All timed out.
 
 
 ## Testing requests to Ollama in an Azure Container App using A100 GPU
-Ollama container running on: NC24A100 GPU, 24vCPU, 220GB memory (AUD$106/day (when continuously running)).
+Ollama container running on: NC24A100 GPU, 24vCPU, 220GB memory (AUD$338/day (when continuously running, after free grant runs out)).
 Open WebUI container on: 0.5vCPU, 1GB memory.
 
 ### Summary of Observations
@@ -152,7 +152,7 @@ All timed out.
 
 
 ## Testing requests to Ollama in an Azure Container App using T4 GPU
-Ollama container running on: T4 GPU, 8vCPU, 56GB memory (AUD$14/day (when continuously running)).
+Ollama container running on: T4 GPU, 8vCPU, 56GB memory (AUD$82/day (when continuously running, after free grant runs out)).
 Open WebUI container on: 0.5vCPU, 1GB memory.
 
 ### Summary of Observations
@@ -223,7 +223,7 @@ All timed out.
 
 
 ## Testing requests to Ollama in an Azure Container App using A100 GPU
-Ollama container running on: NC24A100 GPU, 24vCPU, 220GB memory (AUD$106/day (when continuously running)).
+Ollama container running on: NC24A100 GPU, 24vCPU, 220GB memory (AUD$338/day (when continuously running, after free grant runs out)).
 Request direct to Ollama. No Open WebUI in between.
 
 ### Summary of Observations
